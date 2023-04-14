@@ -9,10 +9,10 @@ void main(){
   print(data);
   data = "Class 2";
   print(data);
-  var data2 = 10  
+  var data2 = 10;
   print(data2);
   // data2 = "Student" will give an error
 
-  print("Name: " + name + ", Age: " + age.toString() + ", Price: ", price.toString());
-  print("Name: $name, Age: $age, Price: $price");  
+  print("Name: " + name + ", Age: " + age.toString() + ", Price: " + price.toString());
+  print("Name: $name, Age: $age, Adult: $isAdult, Price: $price");  
 }

@@ -1,6 +1,6 @@
 void main(){
   int n1 = 100, n2 = 50;
-  var operstion = "add"
+  var operation = "add";
   // Switch
   switch(operation){
     case "add":
