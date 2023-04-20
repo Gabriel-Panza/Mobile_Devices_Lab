@@ -6,7 +6,8 @@ void main(){
   double parcelaAtual=parcela;
 
   for (int i=0;i<numParcelas-1;i++){
+    print("Parcela ${i+1}:: ${parcelaAtual}");
     parcelaAtual *= (1+juro);
   }
-  print("O valor final do Emprestimo: ${parcelaAtual}");
+  print("O valor final do Emprestimo: ${parcelaAtual.toStringAsFixed(2)}");
 }

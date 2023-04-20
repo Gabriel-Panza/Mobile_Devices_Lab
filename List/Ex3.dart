@@ -9,7 +9,8 @@ void main(){
   int numParcelas = 5;
   
   for (int i=0;i<numParcelas-1;i++){
+    print("Parcela ${i+1}:: ${parcelaAtual}");
     parcelaAtual = proxParcela();
   }
-  print("O valor final do Emprestimo: ${parcelaAtual}");
+  print("O valor final do Emprestimo: ${parcelaAtual.toStringAsFixed(2)}");
 }

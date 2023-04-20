@@ -1,7 +1,7 @@
 int cont=0;
 
 double proxParcela(double parcelaAtual, double juro, int emprestimo){
-  print("Emprestimo ${emprestimo}: parcela ${cont} eh ${parcelaAtual}");
+  print("Emprestimo ${emprestimo}: parcela ${cont} eh ${parcelaAtual.toStringAsFixed(2)}");
   return parcelaAtual *= (1+juro);
 }
 void main(){
