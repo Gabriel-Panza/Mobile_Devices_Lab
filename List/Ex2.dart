@@ -1,5 +1,5 @@
 double proxParcela(double parcelaAtual, double juro){
-    return parcelaAtual *= (1+juro);
+    return parcelaAtual * (1+juro);
 }
 void main(){
   double parcela = 200.0;
