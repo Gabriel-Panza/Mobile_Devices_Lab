@@ -16,6 +16,19 @@ class _JogoPedraPapelTesouraAppState extends State<JogoPedraPapelTesouraApp> {
   String? _escolhaOponente;
   String _resultado = "";
 
+  Image _imagemEscolhaOponente() {
+    switch (_escolhaOponente) {
+      case 'Pedra':
+        return Image.asset('../assets/images/pedra.png', width: 100);
+      case 'Papel':
+        return Image.asset('../assets/images/papel.png', width: 100);
+      case 'Tesoura':
+        return Image.asset('../assets/images/tesoura.png', width: 100);
+      default:
+        return Image.asset('../assets/images/vazio.png', width: 100);
+    }
+  }
+  
   void _jogar(String escolhaUsuario) {
     setState(() {
       _escolhaUsuario = escolhaUsuario;
@@ -44,8 +57,13 @@ class _JogoPedraPapelTesouraAppState extends State<JogoPedraPapelTesouraApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Escolha do oponente: $_escolhaOponente'),
-              const SizedBox(height: 20),
+              Column(
+                children: [
+                  const Text('Escolha do oponente:'),
+                  const SizedBox(height: 10),
+                  _imagemEscolhaOponente(),
+                ],
+              ),              const SizedBox(height: 20),
               Text(_resultado, style: const TextStyle(fontSize: 24)),
               const SizedBox(height: 20),
               Row(
