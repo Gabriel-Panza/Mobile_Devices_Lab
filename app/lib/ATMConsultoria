@@ -1,0 +1,160 @@
+import 'package:flutter/material.dart';
+
+class ATMConsultoriaApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ATM Consultoria',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('ATM Consultoria'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/logo.png'),
+            SizedBox(height: 20),
+            ElevatedButton(
+              Image.asset('assets/images/menu_empresa.png'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CompanyScreen()),
+                );
+              },
+              child: Text('Empresa'),
+            ),
+            ElevatedButton(
+              Image.asset('assets/images/menu_servico.png'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ServiceScreen()),
+                );
+              },
+              child: Text('Serviço'),
+            ),
+            ElevatedButton(
+              Image.asset('assets/images/menu_cliente.png'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ClientScreen()),
+                );
+              },
+              child: Text('Cliente'),
+            ),
+            ElevatedButton(
+              Image.asset('assets/images/menu_contatoS.png'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ContactScreen()),
+                );
+              },
+              child: Text('Contato'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CompanyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Empresa'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/detalhe_empresa.png'),
+            Text('Descrição da empresa'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ServiceScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Serviço'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/detalhe_servico.png'),
+            Text('Lista de serviços oferecidos'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ClientScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Cliente'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/detalhe_cliente.png'),
+            Text('Lista de clientes'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ContactScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Contato'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/detalhe_contato.png'),
+            Text('Informações de contato'),
+            SizedBox(height: 20), 
+            Image.asset('assets/cliente1.png'),
+            SizedBox(height: 20), 
+            Image.asset('assets/cliente2.png')
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void main() => runApp(const ATMConsultoriaApp());
