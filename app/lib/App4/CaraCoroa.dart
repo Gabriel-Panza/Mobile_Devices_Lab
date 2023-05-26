@@ -84,5 +84,3 @@ class ResultPage extends StatelessWidget {
     );
   }
 }
-
-void main() => runApp(const CaraOuCoroaApp());

@@ -58,6 +58,27 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/images/cara.png
+    - assets/images/coroa.png
+    - assets/images/cliente1.png
+    - assets/images/cliente2.png
+    - assets/images/detalhe_cliente.png
+    - assets/images/detalhe_contato.png
+    - assets/images/detalhe_empresa.png
+    - assets/images/detalhe_servico.png
+    - assets/images/logo_cc.png
+    - assets/images/logo.png
+    - assets/images/menu_cliente.png
+    - assets/images/menu_contato.png
+    - assets/images/menu_empresa.png
+    - assets/images/menu_servico.png
+    - assets/images/papel.png
+    - assets/images/pedra.png
+    - assets/images/tesoura.png
+    - assets/images/title.png
+    - assets/images/vazio.png
+  
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
