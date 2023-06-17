@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   String street = "", district = "", state = "";
 
   void getCep() async{
-    String url = "https://viacep.com.br/ws/" + _cepController.text + "/json/";
+    String url = "https://viacep.com.br/ws/${_cepController.text}/json/";
     http.Response response;
     response = await http.get(Uri.parse(url));
 
@@ -50,9 +50,9 @@ class _HomeState extends State<Home> {
             onPressed: getCep,
             child: const Text("Consultar")
           ),
-          Text("Rua: " + street),
-          Text("Bairro: " + district),
-          Text("Estado: " + state),
+          Text("Rua: $street"),
+          Text("Bairro: $district"),
+          Text("Estado: $state"),
         ],
       )
     );
