@@ -49,12 +49,10 @@ class CampeonatoListScreen extends StatelessWidget {
   }
 
   Future<List<Campeonato>> getCampeonatos() async {
-    const url = 'URL_DA_API'; // Substitua pela URL correta da API de futebol
+    const url = 'https://api.api-futebol.com.br/v1/'; // Substitua pela URL correta da API de futebol
 
     // Realiza a chamada GET à API
-    final response = await http.get(Uri.parse(url), headers: {
-      'Authorization': 'YOUR_API_KEY', // Substitua pela chave de API correta
-    });
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

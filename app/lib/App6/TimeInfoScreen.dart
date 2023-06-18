@@ -40,12 +40,10 @@ class TimeInfoScreen extends StatelessWidget {
   }
 
   Future<Time> getTimeInfo(int campeonatoId, int timeId) async {
-    final url = 'URL_DA_API/$campeonatoId/times/$timeId'; // Substitua pela URL correta da API
+    final url = 'https://api.api-futebol.com.br/v1/$campeonatoId/times/$timeId'; // Substitua pela URL correta da API
 
     // Realiza a chamada GET à API
-    final response = await http.get(Uri.parse(url), headers: {
-      'Authorization': 'YOUR_API_KEY', // Substitua pela chave de API correta
-    });
+    final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
