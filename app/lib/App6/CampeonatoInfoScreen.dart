@@ -42,7 +42,9 @@ class CampeonatoInfoScreen extends StatelessWidget {
     final url = 'https://api.api-futebol.com.br/v1/$campeonatoId'; // Substitua pela URL correta da API
 
     // Realiza a chamada GET à API
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(
+      Uri.parse(url)
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
