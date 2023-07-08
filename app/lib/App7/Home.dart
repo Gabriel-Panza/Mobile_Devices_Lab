@@ -1,235 +1,164 @@
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  List<Map<String, dynamic>> _taskList = [];
+  TextEditingController _taskController = TextEditingController();
 
-  _recoverDatabase() async {
-    final databasePath = await getDatabasesPath();
+  Future<File> _getFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    print("Path: ${directory.path}");
 
-    final path = join(databasePath, "banco.db");
-
-    print("Path DB: ${path}");
-
-    Database db = await openDatabase(
-        path,
-        version: 1,
-        onCreate: (db, version) async {
-          String sql = """
-          CREATE TABLE TAREFAS(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          texto_tarefa VARCHAR,
-          concluido INTEGER
-        );
-        """;
-          await db.execute(sql);
-        }
-    );
-    return db;
+    return File("${directory.path}/data.json");
   }
 
-  List _listaTarefas = [];
-  
+  void _saveTask() async {
+    String taskStr = _taskController.text;
 
-  TextEditingController _controllerTarefa = TextEditingController();
-
-  _saveTarefa(bool concluido) async{
-    Database db = await _recoverDatabase();
-    int valor;
-
-    Map<String, dynamic> tarefa = {
-      "texto_tarefa": _controllerTarefa.text,
-      "concluido" : concluido ? 1 : 0
+    Map<String, dynamic> task = {
+      "title": taskStr,
+      "completed": false,
     };
 
-    int tarefaId = await db.insert("TAREFAS", tarefa);
-    _readTarefas();
-  }
-
-  _readTarefas() async{
-    Database db = await _recoverDatabase();
-    List query = await db.rawQuery("select * from TAREFAS");
-    _listaTarefas = query.toList();
     setState(() {
-
+      _taskList.add(task);
     });
+
+    await _saveFile();
   }
 
-  _editTarefa(int tarefaIndex, bool? value) async{
-    Database db = await _recoverDatabase();
-    int boolAsInt = _listaTarefas[tarefaIndex]["concluido"];
-
-    if (value != null) boolAsInt = value ? 1 : 0;
-
-    Map<String, dynamic> tarefa = {
-      "texto_tarefa": _controllerTarefa.text ?? _listaTarefas[tarefaIndex]["texto_tarefa"],
-      "concluido" : boolAsInt
-    };
-    await db.update("TAREFAS", tarefa, where: 'id = ?', whereArgs: [_listaTarefas[tarefaIndex]["id"]]);
-    _readTarefas();
+  Future<void> _saveFile() async {
+    final file = await _getFile();
+    String data = jsonEncode(_taskList);
+    await file.writeAsString(data);
   }
 
-  _removeTarefa(int tarefaIndex) async{
-    Database db = await _recoverDatabase();
-    await db.delete("TAREFAS", where: "id = ?", whereArgs: [_listaTarefas[tarefaIndex]["id"]]);
+  Future<String> _readFile() async {
+    try {
+      final file = await _getFile();
+      return await file.readAsString();
+    } catch (e) {
+      return "ERROR";
+    }
+  }
+
+  Widget _listItemBuilder(BuildContext context, int index) {
+    final item =
+        "${_taskList[index]["title"]}${_taskList[index]["completed"].toString()}";
+
+    return Dismissible(
+      key: Key(DateTime.now().microsecondsSinceEpoch.toString()),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        setState(() {
+          _taskList.removeAt(index);
+        });
+        _saveFile();
+      },
+      background: Container(
+        color: Colors.red,
+        padding: EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.delete,
+              color: Colors.white,
+            )
+          ],
+        ),
+      ),
+      child: CheckboxListTile(
+        title: Text(_taskList[index]["title"]),
+        value: _taskList[index]["completed"],
+        onChanged: (newValue) {
+          setState(() {
+            _taskList[index]["completed"] = newValue;
+          });
+          _saveFile();
+        },
+      ),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    _readTarefas();
-
-    setState(() {
-
+    _readFile().then((data) {
+      setState(() {
+        print("Data: $data");
+        _taskList = jsonDecode(data) ?? [];
+        print("Data2: $_taskList");
+      });
     });
-
   }
 
-  Future<dynamic> _showCreateEditDialog(BuildContext context, {bool editing = false, int? editingIndex} ) {
-    if (editing) {
-      _controllerTarefa.text = _listaTarefas[editingIndex!]["texto_tarefa"];
-      return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Editar Tarefa"),
-              content: TextField(
-                  controller: _controllerTarefa,
-                  decoration:
-                  InputDecoration(labelText: "Digite sua tarefa"),
-                  onChanged: (text) {}),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      _controllerTarefa.text = "";
-                      _readTarefas();
-                      Navigator.pop(context);
-                    },
-                    child: Text("Cancelar")),
-                TextButton(
-                    onPressed: () async {
-                      await _editTarefa(editingIndex!, null);
-                      _controllerTarefa.text = "";
-                      _readTarefas();
-                      Navigator.pop(context);
-                    },
-                    child: Text("Salvar")),
-              ],
-            );
-          });
-    } else {
-      return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Adicionar Tarefa"),
-              content: TextField(
-                  controller: _controllerTarefa,
-                  decoration:
-                  InputDecoration(labelText: "Digite sua tarefa"),
-                  onChanged: (text) {}),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      _controllerTarefa.text = "";
-                      Navigator.pop(context);
-                    },
-                    child: Text("Cancelar")),
-                TextButton(
-                    onPressed: () async {
-                      await _saveTarefa(false);
-                      _controllerTarefa.text = "";
-                      Navigator.pop(context);
-                    },
-                    child: Text("Salvar")),
-              ],
-            );
-          });
-    }
-  }
-
-  Widget listItemCreate(BuildContext context, int index) {
-    return Dismissible(
-        key: Key(DateTime.now().microsecondsSinceEpoch.toString()),
-        direction: DismissDirection.horizontal,
-        onDismissed: (direction) {
-          if (direction == DismissDirection.endToStart) {
-            _removeTarefa(index);
-          } else {
-            _showCreateEditDialog(context, editing: true, editingIndex: index);
-          }
-        },
-        background: Container(
-          color: Colors.amber,
-          padding: EdgeInsets.all(16),
-          child: const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                )
-              ]
-          ),
-        ),
-        secondaryBackground: Container(
-          color: Colors.red,
-          padding: EdgeInsets.all(16),
-          child: const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                )
-              ]
-          ),
-        ),
-        child: CheckboxListTile(
-          title: Text(_listaTarefas[index]["texto_tarefa"]),
-          value: _listaTarefas[index]["concluido"] == 1 ? true : false,
-          onChanged: (newVal) {
-            setState(() {
-
-            });
-          },
-        )
-    );
-
-
-  }
   @override
   Widget build(BuildContext context) {
+    print("Items: $_taskList");
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Lista de Tarefas"),
-        backgroundColor: Colors.purple,
+        backgroundColor: Color.fromARGB(255, 0, 139, 121),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        backgroundColor: Colors.purple,
+        backgroundColor: Color.fromARGB(255, 0, 255, 221),
         onPressed: () {
-          _showCreateEditDialog(context, editing: false);
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Adicionar Tarefa"),
+                content: TextField(
+                  controller: _taskController,
+                  decoration: InputDecoration(labelText: "Digite sua tarefa"),
+                  onChanged: (text) {},
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancelar"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _saveTask();
+                      Navigator.pop(context);
+                    },
+                    child: Text("Salvar"),
+                  ),
+                ],
+              );
+            },
+          );
         },
       ),
       body: Container(
         padding: EdgeInsets.all(32),
-        child: Column(children: [
-          Expanded(
-            child: ListView.builder(
-                itemCount: _listaTarefas.length,
-                itemBuilder: listItemCreate
-            )
-          )
-        ]),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: _taskList.length,
+                itemBuilder: _listItemBuilder,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
