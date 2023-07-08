@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps, avoid_print, file_names, unused_local_variable, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -38,7 +40,7 @@ class _HomeState extends State<Home> {
   List _listaTarefas = [];
   
 
-  TextEditingController _controllerTarefa = TextEditingController();
+  final TextEditingController _controllerTarefa = TextEditingController();
 
   _saveTarefa(bool concluido) async{
     Database db = await _recoverDatabase();
@@ -69,7 +71,7 @@ class _HomeState extends State<Home> {
     if (value != null) boolAsInt = value ? 1 : 0;
 
     Map<String, dynamic> tarefa = {
-      "texto_tarefa": _controllerTarefa.text ?? _listaTarefas[tarefaIndex]["texto_tarefa"],
+      "texto_tarefa": _controllerTarefa.text,
       "concluido" : boolAsInt
     };
     await db.update("TAREFAS", tarefa, where: 'id = ?', whereArgs: [_listaTarefas[tarefaIndex]["id"]]);
@@ -99,11 +101,11 @@ class _HomeState extends State<Home> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("Editar Tarefa"),
+              title: const Text("Editar Tarefa"),
               content: TextField(
                   controller: _controllerTarefa,
                   decoration:
-                  InputDecoration(labelText: "Digite sua tarefa"),
+                  const InputDecoration(labelText: "Digite sua tarefa"),
                   onChanged: (text) {}),
               actions: [
                 TextButton(
@@ -112,15 +114,15 @@ class _HomeState extends State<Home> {
                       _readTarefas();
                       Navigator.pop(context);
                     },
-                    child: Text("Cancelar")),
+                    child: const Text("Cancelar")),
                 TextButton(
                     onPressed: () async {
-                      await _editTarefa(editingIndex!, null);
+                      await _editTarefa(editingIndex, null);
                       _controllerTarefa.text = "";
                       _readTarefas();
                       Navigator.pop(context);
                     },
-                    child: Text("Salvar")),
+                    child: const Text("Salvar")),
               ],
             );
           });
@@ -129,11 +131,11 @@ class _HomeState extends State<Home> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("Adicionar Tarefa"),
+              title: const Text("Adicionar Tarefa"),
               content: TextField(
                   controller: _controllerTarefa,
                   decoration:
-                  InputDecoration(labelText: "Digite sua tarefa"),
+                  const InputDecoration(labelText: "Digite sua tarefa"),
                   onChanged: (text) {}),
               actions: [
                 TextButton(
@@ -141,14 +143,14 @@ class _HomeState extends State<Home> {
                       _controllerTarefa.text = "";
                       Navigator.pop(context);
                     },
-                    child: Text("Cancelar")),
+                    child: const Text("Cancelar")),
                 TextButton(
                     onPressed: () async {
                       await _saveTarefa(false);
                       _controllerTarefa.text = "";
                       Navigator.pop(context);
                     },
-                    child: Text("Salvar")),
+                    child: const Text("Salvar")),
               ],
             );
           });
@@ -168,10 +170,10 @@ class _HomeState extends State<Home> {
         },
         background: Container(
           color: Colors.amber,
-          padding: EdgeInsets.all(16),
-          child: const Row(
+          padding: const EdgeInsets.all(16),
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 Icon(
                   Icons.edit,
                   color: Colors.white,
@@ -181,10 +183,10 @@ class _HomeState extends State<Home> {
         ),
         secondaryBackground: Container(
           color: Colors.red,
-          padding: EdgeInsets.all(16),
-          child: const Row(
+          padding: const EdgeInsets.all(16),
+          child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+              children: const [
                 Icon(
                   Icons.delete,
                   color: Colors.white,
@@ -209,19 +211,19 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Tarefas"),
+        title: const Text("Lista de Tarefas"),
         backgroundColor: Colors.purple,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
         backgroundColor: Colors.purple,
         onPressed: () {
           _showCreateEditDialog(context, editing: false);
         },
+        child: const Icon(Icons.add),
       ),
       body: Container(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(children: [
           Expanded(
             child: ListView.builder(
