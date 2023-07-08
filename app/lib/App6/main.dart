@@ -1,11 +1,9 @@
-// ignore_for_file: unused_import
-
-import 'package:flutter/material.dart';
 import 'CampeonatoListScreen.dart';
+import 'package:flutter/material.dart';
 
-void main(){
+void main() {
   runApp(const MaterialApp(
-    title: "Campeonato de Futebol",
+    title: "Futebol",
     debugShowCheckedModeBanner: false,
     home: CampeonatoListScreen()
   ));

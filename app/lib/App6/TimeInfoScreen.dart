@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -43,9 +45,9 @@ class TimeInfoScreen extends StatelessWidget {
     final url = 'https://api.api-futebol.com.br/v1/$campeonatoId/times/$timeId'; // Substitua pela URL correta da API
 
     // Realiza a chamada GET à API
-    final response = await http.get(
-      Uri.parse(url)
-    );
+    final response = await http.get(Uri.parse(url), headers: {
+    "Authorization": "Bearer test_a8c37778328495ac24c5d0d3c3923b",
+    });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

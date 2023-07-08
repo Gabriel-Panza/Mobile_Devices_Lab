@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -5,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'CampeonatoInfoScreen.dart';
 
 class CampeonatoListScreen extends StatelessWidget {
-  const CampeonatoListScreen({super.key});
+  const CampeonatoListScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +51,12 @@ class CampeonatoListScreen extends StatelessWidget {
   }
 
   Future<List<Campeonato>> getCampeonatos() async {
-    const url = 'https://api.api-futebol.com.br/v1/'; // Substitua pela URL correta da API de futebol
+    const url = "https://api.api-futebol.com.br/v1/campeonatos";
 
     // Realiza a chamada GET à API
-    final response = await http.get(
-      Uri.parse(url),
-    );
+    final response = await http.get(Uri.parse(url), headers: {
+    "Authorization": "Bearer live_75bc6d91a7af63bc5304a5bd691fed",
+    });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
