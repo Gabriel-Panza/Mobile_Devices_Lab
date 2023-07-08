@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, avoid_print, unused_local_variable
+
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -12,8 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<Map<String, dynamic>> _taskList = [];
-  TextEditingController _taskController = TextEditingController();
+  List<Map<String, dynamic>> _listaTarefas = [];
+  final TextEditingController _controleTarefas = TextEditingController();
 
   Future<File> _getFile() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -23,7 +25,7 @@ class _HomeState extends State<Home> {
   }
 
   void _saveTask() async {
-    String taskStr = _taskController.text;
+    String taskStr = _controleTarefas.text;
 
     Map<String, dynamic> task = {
       "title": taskStr,
@@ -31,7 +33,7 @@ class _HomeState extends State<Home> {
     };
 
     setState(() {
-      _taskList.add(task);
+      _listaTarefas.add(task);
     });
 
     await _saveFile();
@@ -39,7 +41,7 @@ class _HomeState extends State<Home> {
 
   Future<void> _saveFile() async {
     final file = await _getFile();
-    String data = jsonEncode(_taskList);
+    String data = jsonEncode(_listaTarefas);
     await file.writeAsString(data);
   }
 
@@ -54,23 +56,23 @@ class _HomeState extends State<Home> {
 
   Widget _listItemBuilder(BuildContext context, int index) {
     final item =
-        "${_taskList[index]["title"]}${_taskList[index]["completed"].toString()}";
+        "${_listaTarefas[index]["title"]}${_listaTarefas[index]["completed"].toString()}";
 
     return Dismissible(
       key: Key(DateTime.now().microsecondsSinceEpoch.toString()),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
         setState(() {
-          _taskList.removeAt(index);
+          _listaTarefas.removeAt(index);
         });
         _saveFile();
       },
       background: Container(
         color: Colors.red,
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [
+          children: const [
             Icon(
               Icons.delete,
               color: Colors.white,
@@ -79,11 +81,11 @@ class _HomeState extends State<Home> {
         ),
       ),
       child: CheckboxListTile(
-        title: Text(_taskList[index]["title"]),
-        value: _taskList[index]["completed"],
+        title: Text(_listaTarefas[index]["title"]),
+        value: _listaTarefas[index]["completed"],
         onChanged: (newValue) {
           setState(() {
-            _taskList[index]["completed"] = newValue;
+            _listaTarefas[index]["completed"] = newValue;
           });
           _saveFile();
         },
@@ -97,34 +99,33 @@ class _HomeState extends State<Home> {
     _readFile().then((data) {
       setState(() {
         print("Data: $data");
-        _taskList = jsonDecode(data) ?? [];
-        print("Data2: $_taskList");
+        _listaTarefas = jsonDecode(data) ?? [];
+        print("Data2: $_listaTarefas");
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Items: $_taskList");
+    print("Items: $_listaTarefas");
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de Tarefas"),
-        backgroundColor: Color.fromARGB(255, 0, 139, 121),
+        title: const Text("Lista de Tarefas"),
+        backgroundColor: const Color.fromARGB(255, 0, 139, 121),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        backgroundColor: Color.fromARGB(255, 0, 255, 221),
+        backgroundColor: const Color.fromARGB(255, 0, 255, 221),
         onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text("Adicionar Tarefa"),
+                title: const Text("Adicionar Tarefa"),
                 content: TextField(
-                  controller: _taskController,
-                  decoration: InputDecoration(labelText: "Digite sua tarefa"),
+                  controller: _controleTarefas,
+                  decoration: const InputDecoration(labelText: "Digite sua tarefa"),
                   onChanged: (text) {},
                 ),
                 actions: [
@@ -132,28 +133,29 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text("Cancelar"),
+                    child: const Text("Cancelar"),
                   ),
                   TextButton(
                     onPressed: () {
                       _saveTask();
                       Navigator.pop(context);
                     },
-                    child: Text("Salvar"),
+                    child: const Text("Salvar"),
                   ),
                 ],
               );
             },
           );
         },
+        child: const Icon(Icons.add),
       ),
       body: Container(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: _taskList.length,
+                itemCount: _listaTarefas.length,
                 itemBuilder: _listItemBuilder,
               ),
             ),
